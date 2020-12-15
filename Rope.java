@@ -1,4 +1,8 @@
+package rope593;
+
+
 import java.lang.*;
+import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -7,17 +11,19 @@ import java.io.*;
 //   Large scale alternatives to strings: rope
 //   Implement rope and create tests, benchmarking
 //   load 100Mb+
-//   insert 1 char, 2 chars, … 200 chars in the middle of 100Mb rope
+//   insert 1 char, 2 chars, ... 200 chars in the middle of 100Mb rope
 //   save
 //   delete 1 char, 2 chars .. 200 chars in the middle.
 //   delete a range 1k to 20k chars.
 //   extract a screenful of text (a rectangular window at the start, end and middle
 
-class Rope implements ActionListener {
+public class Rope implements ActionListener {
 
     static private JButton load, insert, save, delete, extract;
     static private JFrame frame = new JFrame("ROPE_TEXT");
-    static private JTextField textField = new JTextField();
+    static private JLabel textstart = new JLabel("START");
+    static private JLabel textmiddle = new JLabel("MIDDLE");
+    static private JLabel textend = new JLabel("END");
     static Rope r = new Rope();
     static RopeStructure rs = new RopeStructure();
 
@@ -27,7 +33,9 @@ class Rope implements ActionListener {
          * the windows
          */
 
-        textField.setBounds(50, 50, 600, 150);
+        textstart.setBounds(50, 25, 100, 150);
+        textmiddle.setBounds(50, 50, 100, 150);
+        textend.setBounds(50, 75, 100, 150);
         // textField.setEditable(true);
         // set size for buttons
         load = new JButton("load");
@@ -62,27 +70,29 @@ class Rope implements ActionListener {
         frame.add(save);
         frame.add(delete);
         frame.add(extract);
-        frame.add(textField);
+        frame.add(textstart);
+        frame.add(textmiddle);
+        frame.add(textend);
 
-        /**
-         * file
-         */
+//        /**
+//         * Scanner
+//         */
+//        Scanner sc = new Scanner(System.in);
         // File file = new File("text.txt");
         // PrintWriter out = new PrintWriter("text.txt");
 
     }
 
+    //String test = "SHOWIT!";
     // get action from buttoms (load insert delete extract)
     @Override
     public void actionPerformed(ActionEvent e) {
-
         if (e.getSource() == load) {
-
-            rs.append(textField.getText());
-            // textField.setText(textField.getText());
+            //rs.append(test);
+            //textstart.setText(test);
             rs.printRoot();
         } else if (e.getSource() == insert) {
-
+        	//rs.insert();
             // rs.insert(textField.getText(), index);
             System.out.println(e.getActionCommand());
         } else if (e.getSource() == delete) {
@@ -100,91 +110,3 @@ class Rope implements ActionListener {
 /**
  * the tree model using here is binary tree.
  */
-class RopeStructure {
-    Node root;
-
-    public RopeStructure() {
-        root = new Node();
-    }
-
-    public void append(String data) { //
-        Node newNode = new Node(data);
-        Node tempRoot = new Node();
-
-        tempRoot.left = root;
-        tempRoot.right = newNode;
-
-        if (tempRoot.left.right == null) {
-            tempRoot.weight = tempRoot.left.weight;
-        } else {
-            tempRoot.weight = tempRoot.left.weight + tempRoot.left.right.weight;
-        }
-        root = tempRoot;
-    }
-
-    public void insert(char a, int index) {
-        Node tempNode = root;
-        if (index > tempNode.weight) {
-            index -= tempNode.weight;
-            tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
-        }
-        while (index < tempNode.weight) {
-            tempNode = tempNode.left;
-        }
-        index -= tempNode.weight;
-        tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
-
-    }
-
-    // save(){}
-    // delete(char target){}
-    // delete(String target, int left, int right){}
-    public void extract(int index) {
-        Node tempNode = root;
-        int temp = index;
-        if (index > tempNode.weight) {
-            index -= tempNode.weight;
-            System.out.println("The char in " + temp + " is " + tempNode.right.data.charAt(index));
-        }
-
-        while (index < tempNode.weight) {
-            tempNode = tempNode.left;
-        }
-
-        index -= tempNode.weight;
-        System.out.println("The char in " + temp + " is " + tempNode.right.data.charAt(index));
-    }
-
-    public void printRoot() {
-        Node.printNode(root);
-    }
-}
-
-// Node for constrcuting "Rope tree"
-class Node {
-
-    int weight = 0;
-    String data = null;
-    public Node left = null;
-    public Node right = null;
-
-    public Node(String data) {
-        this.data = data;
-        this.weight = data.length();
-    }
-
-    public Node() {
-        this.data = null;
-        this.weight = 0;
-    }
-
-    public static void printNode(Node node) {
-        if (node != null) {
-            printNode(node.left);
-            if (node.data != null) {
-                System.out.print(node.data);
-            }
-            printNode(node.right);
-        }
-    }
-}
