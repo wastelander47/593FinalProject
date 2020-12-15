@@ -38,7 +38,6 @@ class Node {
 	}
 }
 
-
 public class RopeStructure {
     Node root;
     ArrayList<String> content = new ArrayList<>();
@@ -123,68 +122,6 @@ public class RopeStructure {
     		printRope(rootnode.right);
     	}
     }
-    
-    public void append(String data) { //
-        Node newNode = new Node(data);
-        Node tempRoot = new Node();
-
-        tempRoot.left = root;
-        tempRoot.right = newNode;
-
-        if (tempRoot.left.right == null) {
-            tempRoot.weight = tempRoot.left.weight;
-        } else {
-            tempRoot.weight = tempRoot.left.weight + tempRoot.left.right.weight;
-        }
-        root = tempRoot;
-    }
-
-    public void insert(char a, int index) {
-        Node tempNode = root;
-        if (index > tempNode.weight) {
-            index -= tempNode.weight;
-            tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
-        }
-        while (index < tempNode.weight) {
-            tempNode = tempNode.left;
-        }
-        index -= tempNode.weight;
-        tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
-
-    }
-    
-    public void insert(String a, int index) {
-        Node tempNode = root;
-        if (index > tempNode.weight) {
-            index -= tempNode.weight;
-            tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
-        }
-        while (index < tempNode.weight) {
-            tempNode = tempNode.left;
-        }
-        index -= tempNode.weight;
-        tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
-
-    }
-
-    // save(){}
-    // delete(char target){}
-    // delete(String target, int left, int right){}
-    public void extract(int index) {
-        Node tempNode = root;
-        int temp = index;
-        if (index > tempNode.weight) {
-            index -= tempNode.weight;
-            System.out.println("The char in " + temp + " is " + tempNode.right.data.charAt(index));
-        }
-
-        while (index < tempNode.weight) {
-            tempNode = tempNode.left;
-        }
-
-        index -= tempNode.weight;
-        System.out.println("The char in " + temp + " is " + tempNode.right.data.charAt(index));
-    }
 
     public void printRoot() {
         Node.printNode(root);
@@ -210,14 +147,67 @@ public class RopeStructure {
     	return node;
     }
     
+    public Node[] splitNode(Node rootnode, int index) {
+    	Node[] newnode = new Node[2];
+    	return newnode;
+    }
     
+    public Node split(Node rootnode, int index) {
+    	
+    }
     
-//    public int searchWords(Node node, String words) {
-//    	char[] wordlist = words.toCharArray();
-//    	for(int i = 0; i<wordlist.length;i++) {
-//    		
-//    	}
-//    }
+    public void append(String data) { //
+        Node newNode = new Node(data);
+        Node tempRoot = new Node();
+
+        tempRoot.left = root;
+        tempRoot.right = newNode;
+
+        if (tempRoot.left.right == null) {
+            tempRoot.weight = tempRoot.left.weight;
+        } else {
+            tempRoot.weight = tempRoot.left.weight + tempRoot.left.right.weight;
+        }
+        root = tempRoot;
+    }
+    
+    public RopeStructure insert(String a, int index) {
+        Node tempNode = root;
+        if (index > tempNode.weight) {
+            index -= tempNode.weight;
+            tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
+        }
+        while (index < tempNode.weight) {
+            tempNode = tempNode.left;
+        }
+        index -= tempNode.weight;
+        tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
+        RopeStructure newrs = new RopeStructure();
+        return newrs;
+    }
+
+    public void extract(int index) {
+        Node tempNode = root;
+        int temp = index;
+        if (index > tempNode.weight) {
+            index -= tempNode.weight;
+            System.out.println("The char in " + temp + " is " + tempNode.right.data.charAt(index));
+        }
+
+        while (index < tempNode.weight) {
+            tempNode = tempNode.left;
+        }
+
+        index -= tempNode.weight;
+        System.out.println("The char in " + temp + " is " + tempNode.right.data.charAt(index));
+    }
+    
+
+    public RopeStructure delete(int indexStart, int indexEnd) {
+		
+    	
+    	return null;
+    }
     
     
 }
