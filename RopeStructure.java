@@ -1,5 +1,7 @@
 package rope593;
 
+import java.util.ArrayList;
+
 //Node for constrcuting "Rope tree"
 class Node {
 
@@ -7,6 +9,7 @@ class Node {
 	String data;
 	Node left;
 	Node right;
+	Node parent;
 
 	public Node() {
 		this.data = null;
@@ -35,9 +38,11 @@ class Node {
 	}
 }
 
+
 public class RopeStructure {
     Node root;
-
+    ArrayList<String> content = new ArrayList<>();
+    
     public RopeStructure() {
         root = new Node();
     }
@@ -57,25 +62,67 @@ public class RopeStructure {
 		return root;
 	}
 	
-	public String parent(Node node){
-		return null;
-	}
+//	public String parent(Node node){
+//		return null;
+//	}
 	
-	//return left child
-	public String leftChild(Node parent){
-		if(parent==null){
-			throw new RuntimeException("节点为Null,无法添加子节点");
-		}
-		return parent.left==null?null:parent.left.data;
-	}
-	
-	//return right child
-	public String rightChild(Node parent){
-		if(parent==null){
-			throw new RuntimeException(parent+"节点为null，无法添加子节点");
-		}
-		return parent.right==null?null:parent.right.data;
-	}
+//	//return left child
+//	public String leftChild(Node parent){
+//		if(parent==null){
+//			throw new RuntimeException("the node is Null,cannot add child node");
+//		}
+//		return parent.left==null?null:parent.left.data;
+//	}
+//	
+//	//return right child
+//	public String rightChild(Node parent){
+//		if(parent==null){
+//			throw new RuntimeException(parent+" node is Null,cannot add child node");
+//		}
+//		return parent.right==null?null:parent.right.data;
+//	}
+    
+    public int length(Node rootnode) { //get the rope's data length
+    	if(rootnode.right == null && rootnode.left == null) {
+    		return rootnode.data.length();
+    	}
+    	else if(rootnode.right == null && rootnode.left != null) {
+    		return length(rootnode.left);
+    	}
+    	else if(rootnode.right != null && rootnode.left == null) {
+    		return length(rootnode.right);
+    	}
+    	else {
+    		return length(rootnode.right) + length(rootnode.left);
+    	}
+    }
+    
+    public void concatenation(Node node1, Node node2) { //concatenate 2 rope
+    	root.left = node1;
+    	root.right = node2;
+    	root.weight = length(node1);
+    	node1.parent = root;
+    	node2.parent = root;
+    }
+    
+    public void printRope(Node rootnode) {
+    	if(rootnode.right == null && rootnode.left == null) {
+    		if(rootnode.data != null) {
+    			content.add(rootnode.data);
+    			System.out.print(rootnode.data);
+    		}
+    	}
+    	else if(rootnode.left == null) {
+    		printRope(rootnode.right);
+    	}
+    	else if(rootnode.right == null) {
+    		printRope(rootnode.left);
+    	}
+    	else {
+    		printRope(rootnode.left);
+    		printRope(rootnode.right);
+    	}
+    }
     
     public void append(String data) { //
         Node newNode = new Node(data);
@@ -145,7 +192,7 @@ public class RopeStructure {
     
     public char search(Node node, int index) {
     	if (node.weight <=index && node.right !=null) {
-    		return search(node.right,index-node.weight);
+    		return search(node.right, index-node.weight);
     	}
     	else if(node.left != null) {
     		return search(node.left, index);
@@ -153,6 +200,24 @@ public class RopeStructure {
     	return node.data.charAt(index);
     }
     
+    public Node searchNode(Node node, int index) {
+    	if (node.weight <=index && node.right !=null) {
+    		return searchNode(node.right, index-node.weight);
+    	}
+    	else if(node.left != null) {
+    		return searchNode(node.left, index);
+    	}
+    	return node;
+    }
+    
+    
+    
+//    public int searchWords(Node node, String words) {
+//    	char[] wordlist = words.toCharArray();
+//    	for(int i = 0; i<wordlist.length;i++) {
+//    		
+//    	}
+//    }
     
     
 }
