@@ -1,78 +1,190 @@
-public interface Rope{
+import java.lang.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.io.*;
 
-	Rope append(char c);
+//   Large scale alternatives to strings: rope
+//   Implement rope and create tests, benchmarking
+//   load 100Mb+
+//   insert 1 char, 2 chars, … 200 chars in the middle of 100Mb rope
+//   save
+//   delete 1 char, 2 chars .. 200 chars in the middle.
+//   delete a range 1k to 20k chars.
+//   extract a screenful of text (a rectangular window at the start, end and middle
 
-	Rope append(CharSequence suffix);
+class Rope implements ActionListener {
 
-	Rope append(CharSequence csq, int start, int end);
+    static private JButton load, insert, save, delete, extract;
+    static private JFrame frame = new JFrame("ROPE_TEXT");
+    static private JTextField textField = new JTextField();
+    static Rope r = new Rope();
+    static RopeStructure rs = new RopeStructure();
 
-    Rope delete(int start, int end);
+    public static void main(String[] args) {
 
+        /**
+         * the windows
+         */
 
-	int indexOf(char ch);
+        textField.setBounds(50, 50, 600, 150);
+        // textField.setEditable(true);
+        // set size for buttons
+        load = new JButton("load");
+        load.setBounds(100, 400, 100, 50);
+        load.addActionListener(r);
 
-	int indexOf(char ch, int fromIndex);
+        insert = new JButton("Insert");
+        insert.setBounds(200, 450, 100, 50);
+        insert.addActionListener(r);
 
-	int indexOf(CharSequence sequence);
+        save = new JButton("Save");
+        save.setBounds(300, 500, 100, 50);
+        save.addActionListener(r);
 
-	int indexOf(CharSequence sequence, int fromIndex);
+        delete = new JButton("Delete");
+        delete.setBounds(400, 550, 100, 50);
+        delete.addActionListener(r);
 
+        extract = new JButton("Extract");
+        extract.setBounds(500, 600, 100, 50);
+        extract.addActionListener(r);
 
-    Rope insert(int dstOffset, CharSequence s);
+        frame.setSize(new Dimension(750, 700));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        // textField.setText(textField.getText());
 
+        // add components to frame.
+        frame.add(load);
+        frame.add(insert);
+        frame.add(save);
+        frame.add(delete);
+        frame.add(extract);
+        frame.add(textField);
 
-    Iterator<Character> iterator(int start);
+        /**
+         * file
+         */
+        // File file = new File("text.txt");
+        // PrintWriter out = new PrintWriter("text.txt");
 
+    }
 
-	Rope trimStart();
+    // get action from buttoms (load insert delete extract)
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-    Matcher matcher(Pattern pattern);
+        if (e.getSource() == load) {
 
+            rs.append(textField.getText());
+            // textField.setText(textField.getText());
+            rs.printRoot();
+        } else if (e.getSource() == insert) {
 
-    public boolean matches(Pattern regex);
+            // rs.insert(textField.getText(), index);
+            System.out.println(e.getActionCommand());
+        } else if (e.getSource() == delete) {
+            System.out.println(e.getActionCommand());
+        } else if (e.getSource() == save) {
+            System.out.println(e.getActionCommand());
+        } else if (e.getSource() == extract) {
+            System.out.println(e.getActionCommand());
+        } else {
+            System.err.println("No action!");
+        }
+    }
+}
 
-    public boolean matches(String regex);
+/**
+ * the tree model using here is binary tree.
+ */
+class RopeStructure {
+    Node root;
 
+    public RopeStructure() {
+        root = new Node();
+    }
 
-    public Rope rebalance();
+    public void append(String data) { //
+        Node newNode = new Node(data);
+        Node tempRoot = new Node();
 
-    public Rope reverse();
+        tempRoot.left = root;
+        tempRoot.right = newNode;
 
+        if (tempRoot.left.right == null) {
+            tempRoot.weight = tempRoot.left.weight;
+        } else {
+            tempRoot.weight = tempRoot.left.weight + tempRoot.left.right.weight;
+        }
+        root = tempRoot;
+    }
 
-    Iterator<Character> reverseIterator();
+    public void insert(char a, int index) {
+        Node tempNode = root;
+        if (index > tempNode.weight) {
+            index -= tempNode.weight;
+            tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
+        }
+        while (index < tempNode.weight) {
+            tempNode = tempNode.left;
+        }
+        index -= tempNode.weight;
+        tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
 
-    Iterator<Character> reverseIterator(int start);
+    }
 
-	Rope trimEnd();
+    // save(){}
+    // delete(char target){}
+    // delete(String target, int left, int right){}
+    public void extract(int index) {
+        Node tempNode = root;
+        int temp = index;
+        if (index > tempNode.weight) {
+            index -= tempNode.weight;
+            System.out.println("The char in " + temp + " is " + tempNode.right.data.charAt(index));
+        }
 
-	Rope subSequence(int start, int end);
+        while (index < tempNode.weight) {
+            tempNode = tempNode.left;
+        }
 
-	Rope trim();
+        index -= tempNode.weight;
+        System.out.println("The char in " + temp + " is " + tempNode.right.data.charAt(index));
+    }
 
+    public void printRoot() {
+        Node.printNode(root);
+    }
+}
 
-    public void write(Writer out) throws IOException;
+// Node for constrcuting "Rope tree"
+class Node {
 
-    public void write(Writer out, int offset, int length) throws IOException;
+    int weight = 0;
+    String data = null;
+    public Node left = null;
+    public Node right = null;
 
-    
-    public Rope padStart(int toLength);
-    
-    public Rope padStart(int toLength, char padChar);
+    public Node(String data) {
+        this.data = data;
+        this.weight = data.length();
+    }
 
-    
-    public Rope padEnd(int toLength);
-    
-    public Rope padEnd(int toLength, char padChar);
-    
+    public Node() {
+        this.data = null;
+        this.weight = 0;
+    }
 
-    public boolean isEmpty();
-    
-
-    public boolean startsWith(CharSequence prefix);
-
-    public boolean startsWith(CharSequence prefix, int offset);
-    
-    public boolean endsWith(CharSequence suffix);
-
-    public boolean endsWith(CharSequence suffix, int offset);
+    public static void printNode(Node node) {
+        if (node != null) {
+            printNode(node.left);
+            if (node.data != null) {
+                System.out.print(node.data);
+            }
+            printNode(node.right);
+        }
+    }
 }
