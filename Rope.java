@@ -17,6 +17,10 @@ import java.io.*;
 //   delete a range 1k to 20k chars.
 //   extract a screenful of text (a rectangular window at the start, end and middle
 
+/**
+ * @author Shaobo Li
+ */
+
 public class Rope implements ActionListener {
 
     static private JButton load, insert, save, delete, extract;

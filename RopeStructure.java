@@ -3,6 +3,9 @@ package rope593;
 import java.util.ArrayList;
 
 //Node for constrcuting "Rope tree"
+/**
+ * @author Tianze Liang
+ */
 class Node {
 
 	int weight = 0;
@@ -31,8 +34,10 @@ class Node {
 		this.data = data;
 		this.parent = parent;
 	}
-	
-    public int length(Node rootnode) { //get the rope's data length
+	/**
+	 * get the whole rope's data length
+	 */
+    public int length(Node rootnode) {
     	if(rootnode.right == null && rootnode.left == null) {
     		return rootnode.data.length();
     	}
@@ -47,6 +52,9 @@ class Node {
     	}
     }
 	
+	/**
+	 * import the whole data as String[]
+	 */
 	public Node(String[] data) {
     	if(data.length==1) {
     	this.data=data[0];
@@ -67,10 +75,9 @@ class Node {
     		this.data = "";
     		this.weight = length(this);
     	}
-    	
     }
 
-	public static void printNode(Node node) {
+	public static void printNode(Node node) {//printout the data
 		if (node != null) {
 			printNode(node.left);
 			if (node.data != null) {
@@ -79,23 +86,28 @@ class Node {
 			printNode(node.right);
 		}
 	}
-	
-	
-	
-	
-	
 }
 
+/**
+ * @author Tianze Liang, Shaobo Li, Xu Nan
+ */
 public class RopeStructure {
     Node root;
     Node[] templ1;
     Node[] templ2;
+    Node tempn1;
+    Node tempn2;
+    Node tempn;
     ArrayList<String> content = new ArrayList<>();
     
     public RopeStructure() {
         root = new Node();
     }
     
+    /**
+     * initialize RopeStructure
+     * @author Tianze Liang
+     */
     public RopeStructure(String[] data) {
     	if(data.length==1) {
     	root = new Node(data[0]);
@@ -115,8 +127,8 @@ public class RopeStructure {
     		root.left = new Node(data1);
     		root.right = new Node(data2);
     	}
-    	
     }
+    
 
 	public RopeStructure(String data) {
         root = new Node(data);
@@ -156,8 +168,11 @@ public class RopeStructure {
 //		}
 //		return parent.right==null?null:parent.right.data;
 //	}
-    
-    public int length(Node rootnode) { //get the rope's data length
+	/**
+	 * get the rope's data length
+	 * @author Tianze Liang
+	 */
+    public int length(Node rootnode) {
     	if(rootnode.right == null && rootnode.left == null) {
     		return rootnode.data.length();
     	}
@@ -172,7 +187,11 @@ public class RopeStructure {
     	}
     }
     
-    public void concatenation(Node node1, Node node2) { //concatenate 2 rope
+	/**
+	 * concatenate 2 rope
+	 * @author Tianze Liang
+	 */
+    public void concatenation(Node node1, Node node2) {
     	root.left = node1;
     	root.right = node2;
     	root.weight = length(node1);
@@ -180,6 +199,11 @@ public class RopeStructure {
     	node2.parent = root;
     }
     
+	/**
+	 * printout all saved data
+	 * save the rope data into ArrayList content
+	 * @author Tianze Liang
+	 */
     public void printRope(Node rootnode) {
     	if(rootnode.right == null && rootnode.left == null) {
     		if(rootnode.data != null) {
@@ -199,10 +223,16 @@ public class RopeStructure {
     	}
     }
 
+	/**
+	 * @author Tianze Liang
+	 */
     public void printRoot() {
         Node.printNode(root);
     }
     
+	/**
+	 * @author Tianze Liang
+	 */
     public char search(Node node, int index) {
     	if (node.weight <=index && node.right !=null) {
     		return search(node.right, index-node.weight);
@@ -214,6 +244,9 @@ public class RopeStructure {
     }
     
     
+	/**
+	 * @author Tianze Liang
+	 */
     int searchi;
     public Node searchNode(Node node, int index) {
     	if (node.weight <=index && node.right !=null) {
@@ -301,8 +334,11 @@ public class RopeStructure {
 //		return newnode;
 //    }
 
-    
-    public Node[] splitNode(Node node, int index) {//split on this node's index position
+	/**
+	 * split on this node's "index" position
+	 * @author Tianze Liang
+	 */
+    public Node[] splitNode(Node node, int index) {
     	Node[] split = new Node[2];
     	if(index>node.data.length()) {
     		throw new RuntimeException("the index is out of bound");
@@ -316,6 +352,10 @@ public class RopeStructure {
     	return split;
     }
     
+	/**
+	 * split the rope on rootnode's index position
+	 * @author Xu Nan
+	 */
     public Node[] split(Node rootnode, int index) {
     	Node target = searchNode(rootnode, index);
     	int tempi = searchi;
@@ -338,6 +378,10 @@ public class RopeStructure {
 		return null;
     }
     
+	/**
+	 * main split, split node on rope's index position, save the splitted node on tempn
+	 * @author Tianze Liang
+	 */
     public void splits(Node root, int index) {
     	Node node = searchNode(root, index);
     	int tempi = searchi;
@@ -359,13 +403,27 @@ public class RopeStructure {
     	node1.printNode(node1);
     	templ1=l1;
     	templ2=l2;
+    	tempn=node;
+    	//tempn2=node1;
     }
     
-    public Node insert(String indata, int index) {
+	/**
+	 * another way to implement insert method
+	 * @author Tianze Liang
+	 */
+    public void anotherinsert(String indata, int index) {
     	splits(root, index);
-    	Node[] newrope = 
+    	Node[] newrope = new Node[2];
+    	newrope[0]=root;
+    	newrope[1]=tempn;
+    	Node inRope = new Node(indata);
+    	concatenation(root,inRope);
+    	concatenation(tempn,root);
     }
     
+	/**
+	 * @author Shaobo Li
+	 */
     public void append(String data) { //
         Node newNode = new Node(data);
         Node tempRoot = new Node();
@@ -381,6 +439,9 @@ public class RopeStructure {
         root = tempRoot;
     }
     
+	/**
+	 * @author Shaobo Li
+	 */
     public void insert(String a, int index) {
         Node tempNode = root;
         if (index > tempNode.weight) {
@@ -394,6 +455,9 @@ public class RopeStructure {
         tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
     }
 
+	/**
+	 * @author Shaobo Li
+	 */
     public void extract(int index) {
         Node tempNode = root;
         int temp = index;
@@ -410,9 +474,10 @@ public class RopeStructure {
         System.out.println("The char in " + temp + " is " + tempNode.right.data.charAt(index));
     }
     
-
+	/**
+	 * @author Xu Nan
+	 */
     public void delete(int indexStart, int indexEnd) {
-		
 		Node[] tmp1=split(root,indexStart);
 		Node[] tmp2=split(root,indexEnd);
 		concatenation(tmp1[0], tmp2[1]);
