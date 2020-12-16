@@ -88,7 +88,8 @@ class Node {
 
 public class RopeStructure {
     Node root;
-    Node temprootglobal;
+    Node[] templ1;
+    Node[] templ2;
     ArrayList<String> content = new ArrayList<>();
     
     public RopeStructure() {
@@ -212,6 +213,8 @@ public class RopeStructure {
     	return node.data.charAt(index);
     }
     
+    
+    int searchi;
     public Node searchNode(Node node, int index) {
     	if (node.weight <=index && node.right !=null) {
     		return searchNode(node.right, index-node.weight);
@@ -219,6 +222,7 @@ public class RopeStructure {
     	else if(node.left != null) {
     		return searchNode(node.left, index);
     	}
+    	searchi=index;
     	return node;
     }
     
@@ -242,53 +246,124 @@ public class RopeStructure {
 //            return root;
 //    }
     
-	public String subString(int start,int end,Node rootnode)
-	{
-		String str="";
-		boolean found=false;
-		Node tmp=rootnode;
-		if(end>tmp.weight)
-		{
-			found=true;
-			end-=tmp.weight;
-			if(start>tmp.weight)
-			{
-				start-=tmp.weight;
-				str=tmp.right.data.substring(start,end);
-				return str;
-			}
-			else
-				str=tmp.right.data.substring(0,end);
-		}
-		if(!found)
-		{
-			while(end<=tmp.weight)
-				tmp=tmp.left;
-			end-=tmp.weight;
-			if(start>=tmp.weight)
-			{
-				start-=tmp.weight;
-				str=tmp.right.data.substring(start,end)+str;
-				return str;
-			}
-			str=tmp.right.data.substring(0,end);
-		}
-		tmp=tmp.left;
-		while(start<tmp.weight)
-		{
-			str=tmp.right.data+str;
-			tmp=tmp.left;
-		}
-		start-=tmp.weight;
-		str=tmp.right.data.substring(start)+str;
-		return str;
-	}
+//	public StringBuffer subString(int start,int end,Node rootnode)
+//	{
+//		StringBuffer str = new StringBuffer("");
+//		boolean found=false;
+//		Node tmp=rootnode;
+//		if(end>tmp.weight)
+//		{
+//			found=true;
+//			end-=tmp.weight;
+//			if(start>tmp.weight)
+//			{
+//				start-=tmp.weight;
+//				str= new StringBuffer(tmp.right.data.substring(start,end));
+//				return str;
+//			}
+//			else
+//				str=new StringBuffer(tmp.right.data.substring(0,end));
+//		}
+//		if(!found)
+//		{
+//			while(end<=tmp.weight)
+//				tmp=tmp.left;
+//			end-=tmp.weight;
+//			if(start>=tmp.weight)
+//			{
+//				start-=tmp.weight;
+//				StringBuffer strtemp = str;
+//				str=new StringBuffer(tmp.right.data.substring(start,end));
+//				str.append(strtemp);
+//				return str;
+//			}
+//			str=new StringBuffer(tmp.right.data.substring(0,end));
+//		}
+//		tmp=tmp.left;
+//		while(start<tmp.weight)
+//		{
+//			StringBuffer strtemp = str;
+//			str=new StringBuffer(tmp.right.data);
+//			str.append(strtemp);
+//			tmp=tmp.left;
+//		}
+//		start-=tmp.weight;
+//		StringBuffer strtemp = str;
+//		str=new StringBuffer(tmp.right.data.substring(start));
+//		str.append(strtemp);
+//		return str;
+//	}
 	
+//    public Node[] split(Node rootnode, int index) {
+//		Node[] newnode=new Node[2];
+//		StringBuffer str1=subString(0,index-1,rootnode);
+//		StringBuffer str2=subString(index,length(rootnode),rootnode);
+//		return newnode;
+//    }
+
+    
+    public Node[] splitNode(Node node, int index) {//split on this node's index position
+    	Node[] split = new Node[2];
+    	if(index>node.data.length()) {
+    		throw new RuntimeException("the index is out of bound");
+    	}
+    	String str1 = node.data.substring(0, index);
+    	String str2 = node.data.substring(index);
+    	Node newnode1 = new Node(str1);
+    	Node newnode2 = new Node(str2);
+    	split[0]=newnode1;
+    	split[1]=newnode2;
+    	return split;
+    }
+    
     public Node[] split(Node rootnode, int index) {
-		Node[] newnode=new Node[2];
-		String str1=subString(0,index-1,rootnode);
-		String str2=subString(index,length(rootnode),rootnode);
-		return newnode;
+    	Node target = searchNode(rootnode, index);
+    	int tempi = searchi;
+    	if(target.parent == null) {
+    		return splitNode(target, index);
+    	}
+    	else if(target.parent != null) {
+    		if(index!=0) {
+    			Node[] split = splitNode(target, index);
+    			Node split1 = split[0];
+    			Node split2 = split[1];
+    			target.left = split1;
+    			target.right = split2;
+    			target.weight = split1.data.length();
+    			Node rightNode = target.right;
+    			target.right = null;
+    			target.parent.weight -= rightNode.data.length();
+    		}
+    	}
+		return null;
+    }
+    
+    public void splits(Node root, int index) {
+    	Node node = searchNode(root, index);
+    	int tempi = searchi;
+    	
+    	String str1 = node.data.substring(0, tempi);
+    	String str2 = node.data.substring(tempi);
+    	
+    	Node node0 = new Node(str1);
+    	Node node1 = new Node(str2);
+    	
+    	node.weight = node0.data.length();
+    	node.left = node0;
+    	node.right = node1;
+    	node0.parent = node;
+    	node1.parent = node;
+    	Node[] l2 = split(root, index);
+    	Node[] l1 = split(root, 0);
+    	node0.printNode(node0);
+    	node1.printNode(node1);
+    	templ1=l1;
+    	templ2=l2;
+    }
+    
+    public Node insert(String indata, int index) {
+    	splits(root, index);
+    	Node[] newrope = 
     }
     
     public void append(String data) { //
@@ -306,7 +381,7 @@ public class RopeStructure {
         root = tempRoot;
     }
     
-    public RopeStructure insert(String a, int index) {
+    public void insert(String a, int index) {
         Node tempNode = root;
         if (index > tempNode.weight) {
             index -= tempNode.weight;
@@ -317,8 +392,6 @@ public class RopeStructure {
         }
         index -= tempNode.weight;
         tempNode.right.data = tempNode.right.data.substring(0, index) + a + tempNode.right.data.substring(index);
-        RopeStructure newrs = new RopeStructure();
-        return newrs;
     }
 
     public void extract(int index) {
@@ -338,10 +411,11 @@ public class RopeStructure {
     }
     
 
-    public RopeStructure delete(int indexStart, int indexEnd) {
+    public void delete(int indexStart, int indexEnd) {
 		
-    	
-    	return null;
+		Node[] tmp1=split(root,indexStart);
+		Node[] tmp2=split(root,indexEnd);
+		concatenation(tmp1[0], tmp2[1]);
     }
     
     

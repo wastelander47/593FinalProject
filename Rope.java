@@ -83,13 +83,13 @@ public class Rope implements ActionListener {
 
     }
 
-    //String test = "SHOWIT!";
+    String test = "SHOWIT!";
     // get action from buttoms (load insert delete extract)
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == load) {
-            //rs.append(test);
-            //textstart.setText(test);
+            rs.append(test);
+            textstart.setText(test);
             rs.printRoot();
         } else if (e.getSource() == insert) {
         	//rs.insert();
