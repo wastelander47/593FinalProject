@@ -278,54 +278,58 @@ public class RopeStructure {
 //        }
 //            return root;
 //    }
-    
-//	public StringBuffer subString(int start,int end,Node rootnode)
-//	{
-//		StringBuffer str = new StringBuffer("");
-//		boolean found=false;
-//		Node tmp=rootnode;
-//		if(end>tmp.weight)
-//		{
-//			found=true;
-//			end-=tmp.weight;
-//			if(start>tmp.weight)
-//			{
-//				start-=tmp.weight;
-//				str= new StringBuffer(tmp.right.data.substring(start,end));
-//				return str;
-//			}
-//			else
-//				str=new StringBuffer(tmp.right.data.substring(0,end));
-//		}
-//		if(!found)
-//		{
-//			while(end<=tmp.weight)
-//				tmp=tmp.left;
-//			end-=tmp.weight;
-//			if(start>=tmp.weight)
-//			{
-//				start-=tmp.weight;
-//				StringBuffer strtemp = str;
-//				str=new StringBuffer(tmp.right.data.substring(start,end));
-//				str.append(strtemp);
-//				return str;
-//			}
-//			str=new StringBuffer(tmp.right.data.substring(0,end));
-//		}
-//		tmp=tmp.left;
-//		while(start<tmp.weight)
-//		{
-//			StringBuffer strtemp = str;
-//			str=new StringBuffer(tmp.right.data);
-//			str.append(strtemp);
-//			tmp=tmp.left;
-//		}
-//		start-=tmp.weight;
-//		StringBuffer strtemp = str;
-//		str=new StringBuffer(tmp.right.data.substring(start));
-//		str.append(strtemp);
-//		return str;
-//	}
+	
+	/**
+	 * Get the rope data using StringBuffer
+	 * @author Xu Nan
+	 */
+	public StringBuffer subString(int start,int end,Node rootnode)
+	{
+		StringBuffer str = new StringBuffer("");
+		boolean found=false;
+		Node tmp=rootnode;
+		if(end>tmp.weight)
+		{
+			found=true;
+			end-=tmp.weight;
+			if(start>tmp.weight)
+			{
+				start-=tmp.weight;
+				str= new StringBuffer(tmp.right.data.substring(start,end));
+				return str;
+			}
+			else
+				str=new StringBuffer(tmp.right.data.substring(0,end));
+		}
+		if(!found)
+		{
+			while(end<=tmp.weight)
+				tmp=tmp.left;
+			end-=tmp.weight;
+			if(start>=tmp.weight)
+			{
+				start-=tmp.weight;
+				StringBuffer strtemp = str;
+				str=new StringBuffer(tmp.right.data.substring(start,end));
+				str.append(strtemp);
+				return str;
+			}
+			str=new StringBuffer(tmp.right.data.substring(0,end));
+		}
+		tmp=tmp.left;
+		while(start<tmp.weight)
+		{
+			StringBuffer strtemp = str;
+			str=new StringBuffer(tmp.right.data);
+			str.append(strtemp);
+			tmp=tmp.left;
+		}
+		start-=tmp.weight;
+		StringBuffer strtemp = str;
+		str=new StringBuffer(tmp.right.data.substring(start));
+		str.append(strtemp);
+		return str;
+	}
 	
 //    public Node[] split(Node rootnode, int index) {
 //		Node[] newnode=new Node[2];
@@ -477,21 +481,18 @@ public class RopeStructure {
   /**balance the rope
 	 * @author Xu Nan
 	 */
-    public Node balance(Node rootnode)
-  {
-    List<Node>ls=new ArrayList<Node>();
-    inorder(root,ls);
-    return construct(ls,0,ls.size()-1);
-
-  }
-  public void inorder(Node root,List<Node>ls) {
-    if(root==null)
-    {
-      return;
-    }
-    inorder(root->left,ls);
-    ls.add(root);
-    inorder(root.right,ls);
+    public Node balance(Node rootnode){
+		List<Node>ls=new ArrayList<Node>();
+		inorder(root,ls);
+		return construct(ls,0,ls.size()-1);
+	}
+	public void inorder(Node root,List<Node>ls) {
+		if(root==null){
+			return;
+		}
+	inorder(root->left,ls);
+	ls.add(root);
+	inorder(root.right,ls);
 }
     
 	/**delete from start index to end index
