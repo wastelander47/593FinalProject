@@ -26,6 +26,49 @@ class Node {
 		this.left=left;
 		this.right=right;
 	}
+	
+	public Node(String data,Node parent){
+		this.data = data;
+		this.parent = parent;
+	}
+	
+    public int length(Node rootnode) { //get the rope's data length
+    	if(rootnode.right == null && rootnode.left == null) {
+    		return rootnode.data.length();
+    	}
+    	else if(rootnode.right == null && rootnode.left != null) {
+    		return length(rootnode.left);
+    	}
+    	else if(rootnode.right != null && rootnode.left == null) {
+    		return length(rootnode.right);
+    	}
+    	else {
+    		return length(rootnode.right) + length(rootnode.left);
+    	}
+    }
+	
+	public Node(String[] data) {
+    	if(data.length==1) {
+    	this.data=data[0];
+        this.left=null;
+        this.right=null;
+        this.parent= null;
+    	}
+    	else {
+    		int div = data.length;
+    		String[] data1 = new String[data.length/2];
+    		String[] data2 = new String[data.length/2];
+    		for(int i = 0; i<(div/2);i++) {
+    			data1[i]=data[i];
+    			data2[i]=data[i+(div/2)];
+    		}
+    		this.left = new Node(data1);
+    		this.right = new Node(data2);
+    		this.data = "";
+    		this.weight = length(this);
+    	}
+    	
+    }
 
 	public static void printNode(Node node) {
 		if (node != null) {
@@ -36,18 +79,50 @@ class Node {
 			printNode(node.right);
 		}
 	}
+	
+	
+	
+	
+	
 }
 
 public class RopeStructure {
     Node root;
+    Node temprootglobal;
     ArrayList<String> content = new ArrayList<>();
     
     public RopeStructure() {
         root = new Node();
     }
     
-    public RopeStructure(String data) {
+    public RopeStructure(String[] data) {
+    	if(data.length==1) {
+    	root = new Node(data[0]);
+        root.left=null;
+        root.right=null;
+        root.parent= null;
+        //root.data = data[0];
+    	}
+    	else {
+    		int div = data.length;
+    		String[] data1 = new String[data.length/2];
+    		String[] data2 = new String[data.length/2];
+    		for(int i = 0; i<(div/2);i++) {
+    			data1[i]=data[i];
+    			data2[i]=data[i+(div/2)];
+    		}
+    		root.left = new Node(data1);
+    		root.right = new Node(data2);
+    	}
+    	
+    }
+
+	public RopeStructure(String data) {
         root = new Node(data);
+        root.left=null;
+        root.right=null;
+        root.parent= null;
+        root.data = data;
     }
 
 	public boolean empty(){
@@ -147,13 +222,73 @@ public class RopeStructure {
     	return node;
     }
     
-    public Node[] splitNode(Node rootnode, int index) {
-    	Node[] newnode = new Node[2];
-    	return newnode;
-    }
+//    public Node split(Node root, int index){
+//        if(root == null) {
+//            return null;
+//        }
+//        while(root != null){
+//            if(root.weight > index)
+//                root = root.left;
+//            else if(root.weight < index)
+//                root = root.right;
+//            else
+//            {
+//                temprootglobal=root.right;
+//                root.right=null;
+//                break;
+//            }
+//
+//        }
+//            return root;
+//    }
     
-    public Node split(Node rootnode, int index) {
-    	
+	public String subString(int start,int end,Node rootnode)
+	{
+		String str="";
+		boolean found=false;
+		Node tmp=rootnode;
+		if(end>tmp.weight)
+		{
+			found=true;
+			end-=tmp.weight;
+			if(start>tmp.weight)
+			{
+				start-=tmp.weight;
+				str=tmp.right.data.substring(start,end);
+				return str;
+			}
+			else
+				str=tmp.right.data.substring(0,end);
+		}
+		if(!found)
+		{
+			while(end<=tmp.weight)
+				tmp=tmp.left;
+			end-=tmp.weight;
+			if(start>=tmp.weight)
+			{
+				start-=tmp.weight;
+				str=tmp.right.data.substring(start,end)+str;
+				return str;
+			}
+			str=tmp.right.data.substring(0,end);
+		}
+		tmp=tmp.left;
+		while(start<tmp.weight)
+		{
+			str=tmp.right.data+str;
+			tmp=tmp.left;
+		}
+		start-=tmp.weight;
+		str=tmp.right.data.substring(start)+str;
+		return str;
+	}
+	
+    public Node[] split(Node rootnode, int index) {
+		Node[] newnode=new Node[2];
+		String str1=subString(0,index-1,rootnode);
+		String str2=subString(index,length(rootnode),rootnode);
+		return newnode;
     }
     
     public void append(String data) { //
