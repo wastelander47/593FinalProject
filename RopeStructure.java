@@ -109,24 +109,28 @@ public class RopeStructure {
      * @author Tianze Liang
      */
     public RopeStructure(String[] data) {
-    	if(data.length==1) {
-    	root = new Node(data[0]);
-        root.left=null;
-        root.right=null;
-        root.parent= null;
-        //root.data = data[0];
-    	}
-    	else {
-    		int div = data.length;
-    		String[] data1 = new String[data.length/2];
-    		String[] data2 = new String[data.length/2];
-    		for(int i = 0; i<(div/2);i++) {
-    			data1[i]=data[i];
-    			data2[i]=data[i+(div/2)];
-    		}
-    		root.left = new Node(data1);
-    		root.right = new Node(data2);
-    	}
+    	root = new Node(data);
+//    	if(data.length==1) {
+//    	root = new Node(data[0]);
+//        root.left=null;
+//        root.right=null;
+//        root.parent= null;
+//        //root.data = data[0];
+//    	}
+//    	else {
+//    		int div = data.length;
+//    		System.out.println(div);
+//    		String[] data1 = new String[data.length/2];
+//    		String[] data2 = new String[data.length/2];
+//    		for(int i = 0; i<(div/2);i++) {
+//    			data1[i]=data[i];
+//    			data2[i]=data[i+(div/2)];
+//    			System.out.print(data1[i]);
+//    			System.out.print(data2[i]);
+//    		}
+//    		root.left = new Node(data1);
+//    		root.right = new Node(data2);
+//    	}
     }
     
 
@@ -234,13 +238,13 @@ public class RopeStructure {
 	 * @author Tianze Liang
 	 */
     public char search(Node node, int index) {
-    	if (node.weight <=index && node.right !=null) {
+    	if (node.weight <=index && node.right != null) {
     		return search(node.right, index-node.weight);
     	}
     	else if(node.left != null) {
     		return search(node.left, index);
     	}
-    	return node.data.charAt(index);
+    	return node.data.charAt(index);//will cause bug if the data length is less than 1
     }
     
     
@@ -482,7 +486,5 @@ public class RopeStructure {
 		Node[] tmp2=split(root,indexEnd);
 		concatenation(tmp1[0], tmp2[1]);
     }
-    
-    
 }
 
